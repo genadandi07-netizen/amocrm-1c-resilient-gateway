@@ -1,0 +1,21 @@
+FROM python:3.12-slim
+
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1
+
+WORKDIR /app
+
+COPY pyproject.toml README.md pytest.ini conftest.py ./
+COPY .env.example ./
+COPY gateway ./gateway
+COPY scripts ./scripts
+COPY config ./config
+COPY tests ./tests
+COPY OPENAPI_SPEC.json DEPLOYMENT_GUIDE.md ARCHITECTURE_REPORT.md ./
+COPY docs ./docs
+
+RUN pip install --upgrade pip && pip install -e ".[dev]"
+
+CMD ["pytest", "-v", "--disable-warnings"]

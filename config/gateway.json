@@ -1,0 +1,23 @@
+{
+  "circuit_breaker": {
+    "failure_threshold": 5,
+    "cooldown_seconds": 30.0,
+    "half_open_probe_interval": 5.0
+  },
+  "replay_guard": {
+    "timestamp_window_seconds": 300,
+    "nonce_journal_size": 10000
+  },
+  "backoff": {
+    "base_seconds": 0.5,
+    "multiplier": 2.0,
+    "max_seconds": 30.0,
+    "jitter_ratio": 1.0,
+    "max_attempts": 5
+  },
+  "rate_limit": {
+    "algorithm": "token_bucket",
+    "requests_per_window": 100,
+    "window_seconds": 60
+  }
+}

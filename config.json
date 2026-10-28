@@ -1,0 +1,80 @@
+{
+  "name": "amocrm-1c-resilient-gateway",
+  "type": "single_agent_pipeline",
+  "description": "Двусторонний отказоустойчивый шлюз amoCRM ↔ 1C: приём HTTP-вебхуков с обеих сторон (HMAC-SHA256 и/или API-token), идемпотентное хранение в SQLite WAL с transactional outbox (deliveries), отказоустойчивая доставка в 1C OData и amoCRM API (PATCH /api/v4/leads) с circuit breaker, backoff+jitter и fallback в n8n Dead Letter Queue.",
+  "pattern": "Single Agent (Pipeline «Ingress → Validate → Store → Egress») with Function Calling",
+  "complexity_score": 7,
+  "max_components": 4,
+  "max_retries": 5,
+  "entrypoint": "gateway.app:app",
+  "inputs": [
+    "HTTP Webhook (amoCRM → 1C): raw body + headers (X-Signature, X-Timestamp, X-Nonce, Content-Type)",
+    "HTTP Webhook (1C → amoCRM): raw body + headers (X-Api-Token / Authorization: Bearer, либо X-Signature, X-Timestamp, X-Nonce)",
+    "config/gateway.json (circuit_breaker, replay_guard, backoff, rate_limit)"
+  ],
+  "outputs": [
+    "1C OData REST calls (Document_ЗаказПокупателя, Catalog_Контрагенты)",
+    "amoCRM API REST calls (PATCH /api/v4/leads/<id>)",
+    "n8n Dead Letter Queue Webhook (FAILED events)",
+    "SQLite WAL event journal + deliveries outbox (state machine + idempotency_keys)"
+  ],
+  "tools": ["filesystem", "json-data-handling", "template-renderer"],
+  "external_skills": [
+    {"name": "api-rate-limiting", "component": "ingress_guard", "source": "local"},
+    {"name": "json-schema-validator", "component": "contract_validator", "source": "local"},
+    {"name": "database-design", "component": "state_store", "source": "local"},
+    {"name": "backend-development", "component": "egress_dispatcher", "source": "local"}
+  ],
+  "components": [
+    {
+      "id": "ingress_guard",
+      "type": "module",
+      "role": "Шлюз входа и безопасность",
+      "file": "gateway/ingress_guard.py",
+      "skill": "api-rate-limiting"
+    },
+    {
+      "id": "contract_validator",
+      "type": "module",
+      "role": "Валидатор контрактов",
+      "file": "gateway/contract_validator.py",
+      "skill": "json-schema-validator"
+    },
+    {
+      "id": "state_store",
+      "type": "module",
+      "role": "Хранилище состояния и идемпотентности",
+      "file": "gateway/state_store.py",
+      "skill": "database-design"
+    },
+    {
+      "id": "egress_dispatcher",
+      "type": "module",
+      "role": "Диспетчер исходящих вызовов (маршрутизация 1c/amocrm)",
+      "file": "gateway/egress_dispatcher.py",
+      "skill": "backend-development"
+    },
+    {
+      "name": "resilience",
+      "path": "gateway/resilience.py",
+      "role": "Shared Resilience Primitives (TokenBucketRateLimiter, Retry-After floor, status classification)",
+      "type": "shared_library"
+    }
+  ],
+  "verification": {
+    "total_tests": 300,
+    "network_mode": "strict_offline",
+    "execution_time_target_seconds": 120.0
+  },
+  "documentation": [
+    "README.md",
+    "OPENAPI_SPEC.json",
+    "DEPLOYMENT_GUIDE.md",
+    "ARCHITECTURE_REPORT.md",
+    "docs/MAINTENANCE.md",
+    "docs/INTEGRATION_MANUAL.md",
+    "agent.md",
+    "docs/research/egress_contracts.md",
+    "docs/research/ingress_signature.md"
+  ]
+}

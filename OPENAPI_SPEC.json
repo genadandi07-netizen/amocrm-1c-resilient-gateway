@@ -1,0 +1,768 @@
+{
+  "components": {
+    "schemas": {
+      "AmoLeadCreateSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "amo_lead_id": {
+            "title": "Amo Lead Id",
+            "type": "integer"
+          },
+          "budget": {
+            "minimum": 0,
+            "title": "Budget",
+            "type": "number"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "name": {
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "status_id": {
+            "title": "Status Id",
+            "type": "integer"
+          },
+          "tags": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Tags",
+            "type": "array"
+          }
+        },
+        "required": [
+          "amo_lead_id",
+          "name",
+          "budget",
+          "status_id",
+          "created_at"
+        ],
+        "title": "AmoLeadCreateSchema",
+        "type": "object"
+      },
+      "ErrorShape": {
+        "properties": {
+          "how_to_fix": {
+            "title": "How To Fix",
+            "type": "string"
+          },
+          "location": {
+            "title": "Location",
+            "type": "string"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "severity": {
+            "title": "Severity",
+            "type": "string"
+          },
+          "type": {
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "message",
+          "severity",
+          "location",
+          "how_to_fix"
+        ],
+        "title": "ErrorShape",
+        "type": "object"
+      },
+      "OneCCounterpartySchema": {
+        "additionalProperties": false,
+        "properties": {
+          "address": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Address"
+          },
+          "email": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Email"
+          },
+          "inn": {
+            "pattern": "^([0-9]{10}|[0-9]{12})$",
+            "title": "Inn",
+            "type": "string"
+          },
+          "legal_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Legal Name"
+          },
+          "name": {
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "phone": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Phone"
+          }
+        },
+        "required": [
+          "inn",
+          "name"
+        ],
+        "title": "OneCCounterpartySchema",
+        "type": "object"
+      },
+      "OneCOrderCreateSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "counterparty_ref": {
+            "minLength": 1,
+            "title": "Counterparty Ref",
+            "type": "string"
+          },
+          "date": {
+            "format": "date-time",
+            "title": "Date",
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/OneCOrderItem"
+            },
+            "minItems": 1,
+            "title": "Items",
+            "type": "array"
+          },
+          "number": {
+            "minLength": 1,
+            "title": "Number",
+            "type": "string"
+          },
+          "total": {
+            "minimum": 0,
+            "title": "Total",
+            "type": "number"
+          }
+        },
+        "required": [
+          "number",
+          "date",
+          "counterparty_ref",
+          "items",
+          "total"
+        ],
+        "title": "OneCOrderCreateSchema",
+        "type": "object"
+      },
+      "OneCOrderItem": {
+        "additionalProperties": false,
+        "properties": {
+          "price": {
+            "minimum": 0,
+            "title": "Price",
+            "type": "number"
+          },
+          "quantity": {
+            "exclusiveMinimum": 0,
+            "title": "Quantity",
+            "type": "integer"
+          },
+          "sku": {
+            "minLength": 1,
+            "title": "Sku",
+            "type": "string"
+          }
+        },
+        "required": [
+          "sku",
+          "quantity",
+          "price"
+        ],
+        "title": "OneCOrderItem",
+        "type": "object"
+      },
+      "OneCOrderStatusSchema": {
+        "additionalProperties": false,
+        "description": "Status notification emitted by 1C for a customer order.\n\n``order_id`` is the natural key used to route the update to the matching\namoCRM lead; ``payment_status`` and ``comment`` are optional because 1C\nmay omit them depending on the document state.",
+        "properties": {
+          "comment": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Comment"
+          },
+          "order_id": {
+            "minLength": 1,
+            "title": "Order Id",
+            "type": "string"
+          },
+          "payment_status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Payment Status"
+          },
+          "status": {
+            "minLength": 1,
+            "title": "Status",
+            "type": "string"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "order_id",
+          "status",
+          "updated_at"
+        ],
+        "title": "OneCOrderStatusSchema",
+        "type": "object"
+      },
+      "WebhookPayload": {
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "additionalProperties": true,
+            "title": "Data",
+            "type": "object"
+          },
+          "event_type": {
+            "minLength": 1,
+            "title": "Event Type",
+            "type": "string"
+          },
+          "idempotency_key": {
+            "minLength": 1,
+            "title": "Idempotency Key",
+            "type": "string"
+          },
+          "nonce": {
+            "minLength": 1,
+            "title": "Nonce",
+            "type": "string"
+          },
+          "occurred_at": {
+            "format": "date-time",
+            "title": "Occurred At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "idempotency_key",
+          "event_type",
+          "occurred_at",
+          "nonce",
+          "data"
+        ],
+        "title": "WebhookPayload",
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "description": "Resilient AmoCRM <-> 1C integration gateway (Ingress -> Validate -> Store -> Egress).",
+    "title": "amocrm-1c-resilient-gateway",
+    "version": "1.0.0"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/health": {
+      "get": {
+        "operationId": "health_check_health_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "title": "Response Health Check Health Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Health Check"
+      }
+    },
+    "/webhook/amocrm": {
+      "post": {
+        "operationId": "amocrm_webhook_webhook_amocrm_post",
+        "parameters": [
+          {
+            "description": "Must be application/json (charset allowed).",
+            "in": "header",
+            "name": "Content-Type",
+            "required": true,
+            "schema": {
+              "default": "application/json",
+              "type": "string"
+            }
+          },
+          {
+            "description": "HMAC-SHA256 hex digest of the raw request body (prefix `sha256=` allowed). Mandatory for POST /webhook/amocrm; optional on POST /webhook/onec, where it selects the HMAC auth path.",
+            "in": "header",
+            "name": "X-Signature",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "1C API token (GATEWAY_ONEC_API_TOKEN). Alternative to `Authorization: Bearer` on POST /webhook/onec when X-Signature is absent.",
+            "in": "header",
+            "name": "X-Api-Token",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "`Bearer <GATEWAY_ONEC_API_TOKEN>` on POST /webhook/onec. Equivalent to the X-Api-Token header.",
+            "in": "header",
+            "name": "Authorization",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "ISO-8601 (with zone) or epoch seconds within the replay window.",
+            "in": "header",
+            "name": "X-Timestamp",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Unique per request; reused values are rejected as replays.",
+            "in": "header",
+            "name": "X-Nonce",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "examples": {
+                "order": {
+                  "summary": "Lead budget -> 1C customer order",
+                  "value": {
+                    "data": {
+                      "counterparty_ref": "cp-123",
+                      "date": "2026-10-16T10:00:00+00:00",
+                      "items": [
+                        {
+                          "price": 15000.0,
+                          "quantity": 1,
+                          "sku": "SERVICE"
+                        }
+                      ],
+                      "number": "SO-123",
+                      "total": 15000.0
+                    },
+                    "event_type": "order",
+                    "idempotency_key": "amo-lead-123:2026-10-16T10:00:00+00:00",
+                    "nonce": "6f1c0e2a-8f52-4a7c-9e2b-2a3c44d1a9a1",
+                    "occurred_at": "2026-10-16T10:00:00+00:00"
+                  }
+                }
+              },
+              "schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "data": {
+                    "oneOf": [
+                      {
+                        "$ref": "#/components/schemas/OneCOrderCreateSchema"
+                      },
+                      {
+                        "$ref": "#/components/schemas/OneCCounterpartySchema"
+                      },
+                      {
+                        "$ref": "#/components/schemas/AmoLeadCreateSchema"
+                      }
+                    ]
+                  },
+                  "event_type": {
+                    "enum": [
+                      "lead",
+                      "order",
+                      "counterparty"
+                    ],
+                    "type": "string"
+                  },
+                  "idempotency_key": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "nonce": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "occurred_at": {
+                    "format": "date-time",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "idempotency_key",
+                  "event_type",
+                  "occurred_at",
+                  "nonce",
+                  "data"
+                ],
+                "title": "AmoCRMWebhookEnvelope",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "destinations": {
+                      "items": {
+                        "enum": [
+                          "1c",
+                          "amocrm"
+                        ],
+                        "type": "string"
+                      },
+                      "type": "array"
+                    },
+                    "event_id": {
+                      "type": "integer"
+                    },
+                    "status": {
+                      "enum": [
+                        "validated",
+                        "duplicate"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "event_id"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Event accepted (or duplicate)"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorShape"
+                }
+              }
+            },
+            "description": "Invalid HMAC-SHA256 signature"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorShape"
+                }
+              }
+            },
+            "description": "Replay detected or header tampering"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorShape"
+                }
+              }
+            },
+            "description": "Payload validation error"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorShape"
+                }
+              }
+            },
+            "description": "Rate limit exceeded"
+          }
+        },
+        "summary": "Inbound amoCRM relay webhook (amoCRM -> 1C)",
+        "tags": [
+          "webhooks"
+        ]
+      }
+    },
+    "/webhook/onec": {
+      "post": {
+        "operationId": "onec_webhook_webhook_onec_post",
+        "parameters": [
+          {
+            "description": "Must be application/json (charset allowed).",
+            "in": "header",
+            "name": "Content-Type",
+            "required": true,
+            "schema": {
+              "default": "application/json",
+              "type": "string"
+            }
+          },
+          {
+            "description": "HMAC-SHA256 hex digest of the raw request body (prefix `sha256=` allowed). Mandatory for POST /webhook/amocrm; optional on POST /webhook/onec, where it selects the HMAC auth path.",
+            "in": "header",
+            "name": "X-Signature",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "1C API token (GATEWAY_ONEC_API_TOKEN). Alternative to `Authorization: Bearer` on POST /webhook/onec when X-Signature is absent.",
+            "in": "header",
+            "name": "X-Api-Token",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "`Bearer <GATEWAY_ONEC_API_TOKEN>` on POST /webhook/onec. Equivalent to the X-Api-Token header.",
+            "in": "header",
+            "name": "Authorization",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "ISO-8601 (with zone) or epoch seconds within the replay window.",
+            "in": "header",
+            "name": "X-Timestamp",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Unique per request; reused values are rejected as replays.",
+            "in": "header",
+            "name": "X-Nonce",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "examples": {
+                "status": {
+                  "summary": "Order status update routed to an amoCRM lead",
+                  "value": {
+                    "data": {
+                      "comment": "оплачено",
+                      "order_id": "LEAD-42",
+                      "payment_status": "paid",
+                      "status": "paid",
+                      "updated_at": "2026-10-12T00:00:00+00:00"
+                    },
+                    "event_type": "onec_order_status",
+                    "idempotency_key": "1c-order-42:paid:2026-10-16T10:00:00+00:00",
+                    "nonce": "8d2b3c44-1f52-4a7c-9e2b-2a3c44d1a9a1",
+                    "occurred_at": "2026-10-16T10:00:00+00:00"
+                  }
+                }
+              },
+              "schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "data": {
+                    "$ref": "#/components/schemas/OneCOrderStatusSchema"
+                  },
+                  "event_type": {
+                    "enum": [
+                      "onec_order_status"
+                    ],
+                    "type": "string"
+                  },
+                  "idempotency_key": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "nonce": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "occurred_at": {
+                    "format": "date-time",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "idempotency_key",
+                  "event_type",
+                  "occurred_at",
+                  "nonce",
+                  "data"
+                ],
+                "title": "OneCWebhookEnvelope",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "destinations": {
+                      "items": {
+                        "enum": [
+                          "1c",
+                          "amocrm"
+                        ],
+                        "type": "string"
+                      },
+                      "type": "array"
+                    },
+                    "event_id": {
+                      "type": "integer"
+                    },
+                    "status": {
+                      "enum": [
+                        "validated",
+                        "duplicate"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "event_id"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Event accepted (or duplicate)"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorShape"
+                }
+              }
+            },
+            "description": "Invalid 1C API token / HMAC signature"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorShape"
+                }
+              }
+            },
+            "description": "Replay detected or header tampering"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorShape"
+                }
+              }
+            },
+            "description": "Payload validation error"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorShape"
+                }
+              }
+            },
+            "description": "Rate limit exceeded"
+          }
+        },
+        "summary": "Inbound 1C status webhook (1C -> amoCRM)",
+        "tags": [
+          "webhooks"
+        ]
+      }
+    }
+  }
+}

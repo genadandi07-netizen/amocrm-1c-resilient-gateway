@@ -1,0 +1,21 @@
+# Never ship runtime state, secrets or VCS metadata inside the image.
+.git
+.gitignore
+.env
+data/
+
+# Python/build artifacts produced on the host.
+**/__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+*.egg-info/
+build/
+dist/
+
+# Runtime databases (the real ones live in ./data, mounted at run time).
+*.db
+*.db-wal
+*.db-shm
